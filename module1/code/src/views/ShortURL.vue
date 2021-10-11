@@ -37,6 +37,7 @@ export default {
   },
   methods: {
     createDB() {
+      // 创建数据库名称
       let request = window.indexedDB.open("shortURL", 1);
       request.onerror = (err) => {
         console.log(err);
@@ -47,16 +48,19 @@ export default {
 
       request.onupgradeneeded = (e) => {
         this.db = e.target.result;
+        // 定义数据的结构，自增，不重复的编号，对应网址
         let objectStore = this.db.createObjectStore("shortURLs", {
           keyPath: "id",
           autoIncrement: true,
         });
+        // 创建索引
         objectStore.createIndex("url", "url", { unique: false });
         objectStore.createIndex("urlKey", "urlKey", { unique: false });
         console.log("Database setup complete");
       };
     },
 
+    // 插入数据
     async doShort() {
       if (!this.longUrl) return;
 
@@ -65,10 +69,10 @@ export default {
         objectStore.add({
           url: this.longUrl,
         }).onsuccess = async (evt) => {
-          let id = evt.target.result;
+          let id = evt.target.result;  // 得到 url对应的id
           console.log("add sucess>>", id);
 
-          this.shortUrl = await this.shorten(id);
+          this.shortUrl = await this.shorten(id);   // 转成64
           this.shortUrl = "https://a.b/" + this.shortUrl;
         };
       } else {
@@ -85,13 +89,14 @@ export default {
     async shorten(id) {
       let obj = await this.query(id);
       obj.urlKey = this.to64(id);
-      this.update(obj);
+      this.update(obj);  // 转后更新数据库
       return obj.urlKey;
     },
 
     to64(num) {
       let result = [];
       let div = num;
+      // 不停的去除
       while (div) {
         result.push(SIGNS[div % 64]);
         div = Math.floor(div / 64);
@@ -157,6 +162,7 @@ export default {
       return new Promise((resolve) => {
         let objectStore = this.getObjectStore();
         let list = [];
+        // openCursor 游标遍历的api
         objectStore.openCursor().onsuccess = (event) => {
           let s = event.target.result;
           if (s) {
