@@ -15,7 +15,7 @@ export default {
     return { time: 0 };
   },
   mounted() {
-    this.worker = new Clock();
+    this.worker = new Clock();  // Vue用法
 
     console.log(
       String("1234567890").replace(/(\d)(?=(\d{3})+$)/g, (s0, s1, s2) => {

@@ -24,15 +24,18 @@ export default {
     fragment.appendChild(div);
     console.log("fragment>>>", div.offsetHeight);
 
+    // 没有滚动条是无法触发滚动事件的
     window.addEventListener("scroll", () => {
       this.shouldLoad();
     });
 
+    // 通过监听parentNode滚动事件 可以
     console.log(this.$refs.img.parentNode);
     this.$refs.img.parentNode.addEventListener("scroll", () => {
       this.shouldLoad();
     });
 
+    // 新api也可以
     var intersectionObserver = new IntersectionObserver((entries) => {
       // If intersectionRatio is 0, the target is out of view
       // and we do not need to do anything.
