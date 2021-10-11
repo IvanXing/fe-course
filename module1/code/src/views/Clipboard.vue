@@ -31,6 +31,7 @@ export default {
     this.toFixed(1.005, 2);
 
     document.body.oncopy = (evt) => {
+      // document.getSelection() 鼠标选中的部分
       const selection = document.getSelection();
       evt.clipboardData.setData(
         "text/plain",
@@ -43,6 +44,7 @@ export default {
       this.pasteContent = evt.clipboardData.getData("text/plain");
 
       if (evt.clipboardData.items) {
+        // items数组里通过type去区分类型
         evt.clipboardData.items.forEach((item) => {
           if (item.type.includes("image")) {
             let file = item.getAsFile();
